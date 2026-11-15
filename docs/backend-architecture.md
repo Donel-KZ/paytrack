@@ -169,6 +169,22 @@ Never trust an `organisationId` supplied in a request body, query parameter or U
 
 A Hibernate filter or global ORM restriction may be considered as defence in depth, but it must not replace explicit tenant-aware repository methods and tests.
 
+
+### 5.3 Multiple organisation memberships (ADR-001)
+
+A single user account may belong to multiple organisations. The role is stored on the membership, never as a global user role.
+
+```text
+users (1) ─── (many) organisation_memberships (many) ─── (1) organisations
+                         |
+                         ├── role
+                         └── status
+```
+
+The authenticated user selects an organisation for the current request. The client may send the selected organisation identifier, but the backend must verify an active `organisation_memberships` record for the authenticated user before establishing the tenant context. The role used for authorisation is read from that membership.
+
+Deactivating one membership revokes access to that organisation only; other memberships remain unaffected. See [ADR-001](./adr/ADR-001-multi-organisation-membership.md).
+
 ## 6. Core invoice issuance workflow
 
 Invoice issuance is the most important Phase 1 backend use case.
