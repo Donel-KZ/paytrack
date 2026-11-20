@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: paytrack
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/paytrack}
+    username: ${DATABASE_USERNAME:paytrack}
+    password: ${DATABASE_PASSWORD:paytrack}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none # Flyway migrations, not Hibernate, will create/update tables.
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+
+server:
+  port: ${PORT:8080}
