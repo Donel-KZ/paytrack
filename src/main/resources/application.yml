@@ -8,7 +8,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: none # Flyway migrations, not Hibernate, will create/update tables.
+      ddl-auto: validate # Flyway creates the schema; Hibernate validates entity mappings.
     properties:
       hibernate:
         format_sql: true
