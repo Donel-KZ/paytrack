@@ -87,7 +87,7 @@ All tenant-owned tables carry a non-null `organisation_id` (NFR-01). Use UUID pr
 | `organisation_memberships` | `id`, `organisation_id`, `user_id`, role; unique organisation/user pair |
 | `customers` | `id`, `organisation_id`, legal name, GSTIN, billing/shipping addresses, state code, payment terms, credit limit |
 | `invoice_series` | `id`, `organisation_id`, financial year, series key, prefix, next number, padding |
-| `invoices` | `id`, `organisation_id`, customer, series, invoice number, financial year, issue/due dates, place of supply, status, currency, totals, version |
+| `invoices` | `id`, `organisation_id`, customer, series, invoice number, financial year, issue/due dates, place of supply, status, currency, totals, conditional early-payment discount offered/applied amounts and applied timestamp, version |
 | `invoice_lines` | `id`, `organisation_id`, invoice, description, quantity, unit price, discount, taxable base, tax rate/components, line total |
 | `credit_notes` | `id`, `organisation_id`, linked invoice, credit-note number, reason, issue date, totals and status |
 | `credit_note_lines` | `id`, `organisation_id`, credit note, source invoice line, quantity, taxable base, tax components and line total |
@@ -104,6 +104,16 @@ All tenant-owned tables carry a non-null `organisation_id` (NFR-01). Use UUID pr
 - Use tenant-aware foreign keys/constraints where practical so a child row cannot reference a parent from another organisation.
 - Add indexes beginning with `organisation_id` for common tenant-scoped list/detail queries.
 - Use optimistic locking (for example, a version column) for mutable drafts where concurrent edits are possible. Use Flyway for every schema change.
+
+### 3.3 Early-payment discount
+
+An invoice may carry an optional conditional early-payment discount. The invoice stores the offered amount as an immutable snapshot when the invoice is issued. The invoice PDF must display the offered discount and state that it is available only when the invoice is paid in full on or before its due date. The offer is not deducted from the gross invoice total at issue time.
+
+After payment allocation confirms that the invoice has been fully settled, the application evaluates the full-payment receipt date against the invoice due date (inclusive). If the full payment date is on or before the due date, the offered amount is recorded as the applied discount; otherwise the applied amount remains zero. Partial payments do not qualify, even if made before the due date. A missing due date or missing full-payment date also does not qualify.
+
+Persist the offer in `invoices.early_payment_discount_amount`, the amount earned in `invoices.early_payment_discount_applied_amount`, and the application timestamp in `invoices.early_payment_discount_applied_at`. Database constraints prevent negative amounts or an applied amount greater than the offer. The invoice's original gross `total_amount` remains unchanged; the applied discount is a separate settlement adjustment. The payment-allocation module must be the only component that marks the discount as earned.
+
+The eligibility policy is covered by unit tests for full payment before/on/after the due date, partial payment, missing dates, zero offers and negative offers. The current Phase 1 codebase does not yet contain payment allocation or PDF generation, so those integrations remain required before this behavior can be exercised end-to-end or displayed in a generated PDF.
 
 ## 4. API contract
 
