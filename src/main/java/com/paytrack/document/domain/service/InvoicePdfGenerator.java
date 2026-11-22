@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,7 +60,7 @@ public final class InvoicePdfGenerator {
     }
 
     private String money(BigDecimal amount) {
-        return amount == null ? "0.00" : amount.toPlainString();
+        return amount == null ? "0.00" : amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
     private String safe(String value) {

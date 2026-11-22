@@ -1,7 +1,9 @@
 package com.paytrack.identity.infrastructure.persistence.entity;
 import com.paytrack.shared.persistence.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter; import lombok.NoArgsConstructor; import lombok.Setter;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.Instant;
 
 @Entity @Table(name="refresh_tokens", uniqueConstraints=@UniqueConstraint(name="uk_refresh_token_hash", columnNames="token_hash"))

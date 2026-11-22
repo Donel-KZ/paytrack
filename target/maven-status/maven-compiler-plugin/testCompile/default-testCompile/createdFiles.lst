@@ -1,0 +1,8 @@
+com/paytrack/database/FlywaySchemaTest.class
+com/paytrack/invoicing/domain/service/EarlyPaymentDiscountPolicyTest.class
+org/paytrack/com/PaytrackApplicationTests.class
+com/paytrack/invoicing/domain/service/InvoiceTermGroupingServiceTest.class
+org/paytrack/com/TestcontainersConfiguration.class
+com/paytrack/tax/domain/service/GstInvoiceTaxCalculatorTest.class
+org/paytrack/com/TestPaytrackApplication.class
+com/paytrack/document/domain/service/InvoicePdfGeneratorTest.class

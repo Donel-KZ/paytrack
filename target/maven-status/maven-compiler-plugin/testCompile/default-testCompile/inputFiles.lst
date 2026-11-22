@@ -1,0 +1,8 @@
+/Users/Donel/NetBeansProjects/paytrack/src/test/java/com/paytrack/database/FlywaySchemaTest.java
+/Users/Donel/NetBeansProjects/paytrack/src/test/java/com/paytrack/document/domain/service/InvoicePdfGeneratorTest.java
+/Users/Donel/NetBeansProjects/paytrack/src/test/java/com/paytrack/invoicing/domain/service/EarlyPaymentDiscountPolicyTest.java
+/Users/Donel/NetBeansProjects/paytrack/src/test/java/com/paytrack/invoicing/domain/service/InvoiceTermGroupingServiceTest.java
+/Users/Donel/NetBeansProjects/paytrack/src/test/java/com/paytrack/tax/domain/service/GstInvoiceTaxCalculatorTest.java
+/Users/Donel/NetBeansProjects/paytrack/src/test/java/org/paytrack/com/PaytrackApplicationTests.java
+/Users/Donel/NetBeansProjects/paytrack/src/test/java/org/paytrack/com/TestPaytrackApplication.java
+/Users/Donel/NetBeansProjects/paytrack/src/test/java/org/paytrack/com/TestcontainersConfiguration.java
