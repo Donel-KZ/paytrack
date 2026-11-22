@@ -65,6 +65,22 @@ class FlywaySchemaTest {
                 }
             }
 
+            for (String column : List.of("academic_term", "academic_term_order")) {
+                try (ResultSet result = statement.executeQuery("""
+                        SELECT EXISTS (
+                            SELECT 1
+                            FROM information_schema.columns
+                            WHERE table_schema = 'public'
+                              AND table_name = 'invoice_items'
+                              AND column_name = '%s'
+                        )
+                        """.formatted(column))) {
+                    result.next();
+                    assertTrue(result.getBoolean(1),
+                            () -> "invoice_items must contain " + column);
+                }
+            }
+
             for (String table : tenantTables) {
                 try (ResultSet result = statement.executeQuery("""
                         SELECT EXISTS (
