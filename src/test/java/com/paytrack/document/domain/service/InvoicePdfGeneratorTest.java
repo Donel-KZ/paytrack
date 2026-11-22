@@ -1,11 +1,11 @@
 package com.paytrack.document.domain.service;
 
 import com.paytrack.invoicing.domain.service.InvoiceTermGroupingService;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -29,7 +29,7 @@ class InvoicePdfGeneratorTest {
         byte[] pdf = new InvoicePdfGenerator().generate(data);
 
         assertTrue(pdf.length > 0);
-        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(pdf))) {
+        try (PDDocument document = Loader.loadPDF(pdf)) {
             String text = new PDFTextStripper().getText(document);
             assertTrue(text.contains("Term 1"));
             assertTrue(text.contains("Term 1 tuition"));
