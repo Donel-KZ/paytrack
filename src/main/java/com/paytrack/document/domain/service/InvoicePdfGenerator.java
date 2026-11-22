@@ -114,6 +114,7 @@ public final class InvoicePdfGenerator {
         public void close() throws IOException {
             if (content != null) {
                 content.close();
+                content = null;
             }
         }
     }
