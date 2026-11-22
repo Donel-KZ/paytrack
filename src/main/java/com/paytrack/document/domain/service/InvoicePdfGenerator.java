@@ -49,6 +49,8 @@ public final class InvoicePdfGenerator {
             layout.write("Amount due after any earned discount: "
                     + money(invoice.amountDueAfterDiscount()), 10);
 
+            // PDFBox cannot serialize a document while a content stream writer is open.
+            layout.close();
             document.save(output);
             return output.toByteArray();
         } catch (IOException exception) {
@@ -96,6 +98,7 @@ public final class InvoicePdfGenerator {
         private void newPage() throws IOException {
             if (content != null) {
                 content.close();
+                content = null;
             }
             document.addPage(new PDPage());
             content = new PDPageContentStream(document,
