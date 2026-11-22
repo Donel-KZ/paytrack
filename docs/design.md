@@ -88,7 +88,7 @@ All tenant-owned tables carry a non-null `organisation_id` (NFR-01). Use UUID pr
 | `customers` | `id`, `organisation_id`, legal name, GSTIN, billing/shipping addresses, state code, payment terms, credit limit |
 | `invoice_series` | `id`, `organisation_id`, financial year, series key, prefix, next number, padding |
 | `invoices` | `id`, `organisation_id`, customer, series, invoice number, financial year, issue/due dates, place of supply, status, currency, totals, conditional early-payment discount offered/applied amounts and applied timestamp, version |
-| `invoice_lines` | `id`, `organisation_id`, invoice, description, quantity, unit price, discount, taxable base, tax rate/components, line total |
+| `invoice_items` | `id`, `organisation_id`, invoice, description, academic term and term order, quantity, unit price, discount, taxable base, tax rate/components, line total |
 | `credit_notes` | `id`, `organisation_id`, linked invoice, credit-note number, reason, issue date, totals and status |
 | `credit_note_lines` | `id`, `organisation_id`, credit note, source invoice line, quantity, taxable base, tax components and line total |
 | `recurring_invoice_templates` | `id`, `organisation_id`, customer, schedule day, timezone, template data, next run, active flag |
@@ -113,7 +113,9 @@ After payment allocation confirms that the invoice has been fully settled, the a
 
 Persist the offer in `invoices.early_payment_discount_amount`, the amount earned in `invoices.early_payment_discount_applied_amount`, and the application timestamp in `invoices.early_payment_discount_applied_at`. Database constraints prevent negative amounts or an applied amount greater than the offer. The invoice's original gross `total_amount` remains unchanged; the applied discount is a separate settlement adjustment. The payment-allocation module must be the only component that marks the discount as earned.
 
-The eligibility policy is covered by unit tests for full payment before/on/after the due date, partial payment, missing dates, zero offers and negative offers. The current Phase 1 codebase does not yet contain payment allocation or PDF generation, so those integrations remain required before this behavior can be exercised end-to-end or displayed in a generated PDF.
+The eligibility policy is covered by unit tests for full payment before/on/after the due date, partial payment, missing dates, zero offers and negative offers. Fee lines store an academic-term label and an explicit display order. The invoice presentation service groups lines by term and sorts groups by that order. The PDF generator renders each term as a heading with its fee lines beneath it, then displays the invoice total, conditional discount offered, eligibility condition, discount applied and amount due after any earned discount.
+
+Payment allocation is still not implemented in this Phase 1 codebase. Therefore the PDF generator accepts the offered and applied discount amounts as part of its input snapshot; a future payment-allocation use case must evaluate the policy and persist the applied amount before a settlement-updated document is generated. The original issued invoice total remains unchanged.
 
 ## 4. API contract
 
