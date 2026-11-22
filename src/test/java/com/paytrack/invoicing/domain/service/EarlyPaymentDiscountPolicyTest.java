@@ -14,6 +14,22 @@ class EarlyPaymentDiscountPolicyTest {
     private final BigDecimal offeredDiscount = new BigDecimal("125.00");
 
     @Test
+    void shouldApplyEarlyPaymentDiscountOnlyWhenInvoiceIsPaidByDueDate() {
+        var beforeDueDate = policy.evaluate(
+                offeredDiscount, dueDate, dueDate.minusDays(1), true);
+        var onDueDate = policy.evaluate(offeredDiscount, dueDate, dueDate, true);
+        var afterDueDate = policy.evaluate(
+                offeredDiscount, dueDate, dueDate.plusDays(1), true);
+
+        assertTrue(beforeDueDate.eligible());
+        assertEquals(offeredDiscount, beforeDueDate.appliedAmount());
+        assertTrue(onDueDate.eligible());
+        assertEquals(offeredDiscount, onDueDate.appliedAmount());
+        assertFalse(afterDueDate.eligible());
+        assertEquals(new BigDecimal("0.00"), afterDueDate.appliedAmount());
+    }
+
+    @Test
     void appliesDiscountWhenInvoiceIsFullyPaidBeforeDueDate() {
         var decision = policy.evaluate(
                 offeredDiscount, dueDate, LocalDate.of(2026, 12, 10), true);
