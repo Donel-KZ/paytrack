@@ -31,6 +31,23 @@ public class Invoice extends BaseEntity {
     @Column(nullable = false, precision = 19, scale = 2) private java.math.BigDecimal subtotal = java.math.BigDecimal.ZERO;
 
     @Column(name = "discount_total", nullable = false, precision = 19, scale = 2) private java.math.BigDecimal discountTotal = java.math.BigDecimal.ZERO;
+    /**
+     * Conditional discount offered on the issued invoice. This is a snapshot for
+     * customer communication/PDF display; it is not deducted from totalAmount.
+     */
+    @Column(name = "early_payment_discount_amount", nullable = false, precision = 19, scale = 2)
+    private java.math.BigDecimal earlyPaymentDiscountAmount = java.math.BigDecimal.ZERO;
+
+    /**
+     * Discount actually earned after the invoice is fully settled on or before dueDate.
+     * Payment allocation integration is responsible for setting this value.
+     */
+    @Column(name = "early_payment_discount_applied_amount", nullable = false, precision = 19, scale = 2)
+    private java.math.BigDecimal earlyPaymentDiscountAppliedAmount = java.math.BigDecimal.ZERO;
+
+    @Column(name = "early_payment_discount_applied_at")
+    private java.time.Instant earlyPaymentDiscountAppliedAt;
+
 
     @Column(name = "cgst_total", nullable = false, precision = 19, scale = 2) private java.math.BigDecimal cgstTotal = java.math.BigDecimal.ZERO;
 
