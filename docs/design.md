@@ -187,6 +187,20 @@ Rounding example: taxable base ₹0.05 at 5% gives raw tax ₹0.0025. Under the 
 
 Persist the applied tax rate, place of supply, tax type/split and calculated amounts on issued invoice lines so historical invoices remain unchanged if configuration changes. Verify same-state, other-state and mixed-rate invoices, awkward decimal values and discounts. AC-1.3 requires reviewer hand-checking of three tax cases; D-1.6 requires sample invoice PDFs.
 
+### 5.3 Hand-checked acceptance-test invoices
+
+The three automated acceptance tests use the following calculations. Amounts are illustrative INR values and rates; they validate the calculation engine, not the legal tax rate applicable to a particular supply.
+
+| Test | Supply | Taxable line(s) | Expected CGST | Expected SGST | Expected IGST | Tax total | Invoice total |
+|---|---|---|---:|---:|---:|---:|---:|
+| Same-state | Supplier 27, place 27 | ₹100.00 at 18% | ₹9.00 | ₹9.00 | ₹0.00 | ₹18.00 | ₹118.00 |
+| Other-state | Supplier 27, place 29 | ₹100.00 at 18% | ₹0.00 | ₹0.00 | ₹18.00 | ₹18.00 | ₹118.00 |
+| Mixed rates | Supplier 27, place 27 | ₹100.00 at 18%; ₹200.00 at 5% | ₹14.00 | ₹14.00 | ₹0.00 | ₹28.00 | ₹328.00 |
+
+Mixed-rate hand calculation: line 1 taxable ₹100.00 × 18% ÷ 2 = ₹9.00 CGST and ₹9.00 SGST. Line 2 taxable ₹200.00 × 5% ÷ 2 = ₹5.00 CGST and ₹5.00 SGST. Sum the already-rounded line components: CGST ₹14.00, SGST ₹14.00, total tax ₹28.00, taxable subtotal ₹300.00 and invoice total ₹328.00.
+
+All three tests follow the per-line, per-component HALF_UP rounding rule above. For example, a taxable line of ₹0.05 at 5% has a half-rate component of ₹0.00125, which rounds to ₹0.00; the line's rounded tax is therefore ₹0.00 + ₹0.00 for intra-state supply.
+
 ## 6. Numbering rule
 
 ### 6.1 Series and format
