@@ -19,6 +19,10 @@ public class InvoiceItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "product_id") private com.paytrack.catalogue.infrastructure.persistence.entity.Product product;
 
     @Column(nullable = false, length = 500) private String description;
+    @Column(name = "academic_term", nullable = false, length = 100) private String academicTerm = "General";
+
+    @Column(name = "academic_term_order", nullable = false) private Integer academicTermOrder = 0;
+
 
     @Column(nullable = false, precision = 19, scale = 4) private java.math.BigDecimal quantity;
 
