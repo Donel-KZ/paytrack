@@ -45,6 +45,26 @@ class FlywaySchemaTest {
         try (Connection connection = DriverManager.getConnection(
                 postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
              Statement statement = connection.createStatement()) {
+            for (String column : List.of(
+                    "early_payment_discount_amount",
+                    "early_payment_discount_applied_amount",
+                    "early_payment_discount_applied_at"
+            )) {
+                try (ResultSet result = statement.executeQuery("""
+                        SELECT EXISTS (
+                            SELECT 1
+                            FROM information_schema.columns
+                            WHERE table_schema = 'public'
+                              AND table_name = 'invoices'
+                              AND column_name = '%s'
+                        )
+                        """.formatted(column))) {
+                    result.next();
+                    assertTrue(result.getBoolean(1),
+                            () -> "invoices must contain " + column);
+                }
+            }
+
             for (String table : tenantTables) {
                 try (ResultSet result = statement.executeQuery("""
                         SELECT EXISTS (
